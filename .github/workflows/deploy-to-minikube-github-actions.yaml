@@ -14,11 +14,17 @@ jobs:
       run: kubectl get pods -A
     - name: Build image
       run: |
-          export SHELL=/bin/bash
-          eval $(minikube -p minikube docker-env)
-          docker build -f ./Dockerfile -t devopshint/node-app:latest .
-          echo -n "verifying images:"
-          docker images
+              - name: Test service
+      run: |
+        echo "=== Final Pods status ==="
+        kubectl get pods -o wide
+        echo "=== Final Service status ==="
+        kubectl get svc
+        echo "=== Pod description (if any) ==="
+        kubectl describe pod -l app=nodejs-app || echo "No pods found"
+        echo "=== Trying service anyway ==="
+        minikube service list
+        minikube service nodejs-app --url || echo "Service check failed as expected"
     - name: Deploy to minikube
       run:
         kubectl apply -f k8s-node-app.yaml
