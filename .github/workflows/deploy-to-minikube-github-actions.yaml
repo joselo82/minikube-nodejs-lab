@@ -47,5 +47,7 @@ jobs:
 
     - name: Test service
       run: |
+        echo "=== Service List ==="
         minikube service list
-        minikube service nodejs-app --url || echo "Service access failed (no running pod)"
+        echo "=== Opening service URL ==="
+        minikube service nodejs-app --url
