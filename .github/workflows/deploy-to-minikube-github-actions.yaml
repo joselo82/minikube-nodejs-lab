@@ -13,6 +13,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Start Docker
+      run: |
+        sudo systemctl start docker
+        sudo systemctl enable docker
+        docker version
+
     - name: Start Minikube
       uses: medyagh/setup-minikube@master
       with:
