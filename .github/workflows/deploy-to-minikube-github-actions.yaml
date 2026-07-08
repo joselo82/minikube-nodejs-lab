@@ -1,7 +1,7 @@
 name: Deploy to Minikube using GitHub Actions
 
 on: [push]
-
+  
 jobs:
   job1:
     runs-on: ubuntu-latest
@@ -14,9 +14,7 @@ jobs:
       run: kubectl get pods -A
     - name: Build image
       run: |
-              - name: Test service
-      run: |
-        echo "=== Final Pods status ==="
+          echo "=== Final Pods status ==="
         kubectl get pods -o wide
         echo "=== Final Service status ==="
         kubectl get svc
