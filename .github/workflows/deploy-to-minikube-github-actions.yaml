@@ -7,7 +7,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    name: Build & Deploy to Minikube
+    name: Build & Deploy Node.js App to Minikube
 
     steps:
     - name: Checkout code
@@ -24,7 +24,7 @@ jobs:
       with:
         driver: docker
 
-    - name: Build image
+    - name: Build Docker image
       run: |
         eval $(minikube -p minikube docker-env)
         docker build -t joselo82/node-app:latest .
@@ -32,18 +32,20 @@ jobs:
 
     - name: Deploy to Minikube
       run: |
-        kubectl apply -f k8s-node-app.yaml
+        kubectl apply -f k8s/k8s-node-app.yaml
         sleep 15
         echo "=== Pods ==="
         kubectl get pods -o wide
-        echo "=== Deployment ==="
+        echo "=== Services ==="
+        kubectl get svc
+        echo "=== Deployment describe ==="
         kubectl describe deployment nodejs-app
         echo "=== Pod describe ==="
         kubectl describe pod -l app=nodejs-app || echo "No pod found"
-        echo "=== Logs ==="
-        kubectl logs -l app=nodejs-app --tail=30 || echo "No logs"
+        echo "=== Pod Logs ==="
+        kubectl logs -l app=nodejs-app --tail=50 || echo "No logs"
 
     - name: Test service
       run: |
         minikube service list
-        minikube service nodejs-app --url || echo "Service check failed"
+        minikube service nodejs-app --url || echo "Service access failed (no running pod)"
